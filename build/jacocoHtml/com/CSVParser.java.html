@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CSVParser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JavaLab4</a> &gt; <a href="index.source.html" class="el_package">com</a> &gt; <span class="el_source">CSVParser.java</span></div><h1>CSVParser.java</h1><pre class="source lang-java linenums">package com;
+
+
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class CSVParser{
+    String inputFile;
+    String outputFile;
+    char delimiter;
+    char combiner;
+    char newdel;
+    Integer numb;
+<span class="pc" id="L23">    ArrayList&lt;ArrayList&lt;String&gt;&gt; linesArr = new ArrayList&lt;&gt;();</span>
+<span class="pc" id="L24">    ArrayList&lt;String&gt; wordsOfLine = new ArrayList&lt;&gt;();</span>
+    ArrayList&lt;String&gt;  lines;
+
+
+<span class="fc" id="L28">    public CSVParser(String inputFile, char delimiter, char combiner, char newdel, Integer numb) {</span>
+<span class="fc" id="L29">        this.inputFile = inputFile;</span>
+<span class="fc" id="L30">        this.delimiter = delimiter;</span>
+<span class="fc" id="L31">        this.combiner = combiner;</span>
+<span class="fc" id="L32">        this.newdel = newdel;</span>
+<span class="fc" id="L33">        this.numb = numb;</span>
+<span class="fc" id="L34">    }</span>
+
+<span class="fc" id="L36">    public CSVParser(char delimiter, char combiner){</span>
+<span class="fc" id="L37">        this.delimiter = delimiter;</span>
+<span class="fc" id="L38">        this.combiner = combiner;</span>
+<span class="fc" id="L39">    }</span>
+
+<span class="nc" id="L41">    public CSVParser() {</span>
+
+<span class="nc" id="L43">    }</span>
+
+
+    public ArrayList&lt;ArrayList&lt;String&gt;&gt; readCSVFile() throws IOException{
+<span class="fc" id="L47">        lines = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L48">        Path path = Paths.get(inputFile);</span>
+<span class="fc" id="L49">        long lineCount = Files.lines(path).count();</span>
+<span class="fc" id="L50">        int size = (int)(lineCount / numb + 1);</span>
+<span class="fc" id="L51">        int distance = 0;</span>
+
+<span class="fc" id="L53">        FileInputStream str = new FileInputStream(inputFile);</span>
+<span class="fc" id="L54">        FileChannel chnl = str.getChannel();</span>
+
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for(int i = 0; i &lt; numb; i++){</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            if(lineCount &lt; i*size + size){</span>
+<span class="fc" id="L58">                distance =(int)(lineCount - i*size);</span>
+            }else{
+<span class="fc" id="L60">                distance = size;</span>
+            }
+<span class="fc" id="L62">            OpenFile openFile = new OpenFile(i * size, distance, chnl);</span>
+<span class="fc" id="L63">            Thread thread = new Thread(openFile);</span>
+<span class="fc" id="L64">            thread.start();</span>
+            try {
+<span class="fc" id="L66">                thread.join();</span>
+<span class="nc" id="L67">            } catch (InterruptedException e) {</span>
+<span class="nc" id="L68">                e.printStackTrace();</span>
+<span class="fc" id="L69">            }</span>
+        }
+<span class="fc" id="L71">        str.close();</span>
+<span class="fc" id="L72">        parseCSV(lines);</span>
+<span class="fc" id="L73">        return linesArr;</span>
+    }
+
+
+
+    public void parseCSV(ArrayList&lt;String&gt; lines) {
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        for (String s : lines) {</span>
+<span class="fc" id="L80">            String cleanedline = deleteQuotesOfLine(s);</span>
+<span class="fc" id="L81">            wordsOfLine = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">            while (cleanedline.length() &gt; 0) {</span>
+<span class="fc" id="L83">                cleanedline = extractWordFromLine(cleanedline);</span>
+            }
+<span class="fc" id="L85">            linesArr.add(wordsOfLine);</span>
+<span class="fc" id="L86">        }</span>
+<span class="fc" id="L87">    }</span>
+
+    public void writeToFile(String outputFile, ArrayList&lt;ArrayList&lt;String&gt;&gt; filesLinesArray, char newdelimitr) {
+<span class="fc" id="L90">        try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));) {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">            for (ArrayList&lt;String&gt; l : filesLinesArray) {</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">                for (int i = 0; i &lt; l.size(); i++) {</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">                    if (i &lt; l.size() - 1) {</span>
+<span class="fc" id="L94">                        writer.write(l.get(i).length() + &quot;&quot; + newdelimitr);</span>
+                    } else {
+<span class="fc" id="L96">                        writer.write(l.get(i).length() + &quot;\n&quot;);</span>
+                    }
+                }
+<span class="fc" id="L99">            }</span>
+<span class="nc" id="L100">        } catch (IOException e) {</span>
+<span class="nc" id="L101">            e.printStackTrace();</span>
+<span class="fc" id="L102">        }</span>
+<span class="fc" id="L103">    }</span>
+
+
+    public String extractWordFromLine(String line) {
+<span class="fc" id="L107">        int i = 0;</span>
+<span class="fc" id="L108">        String word = &quot;&quot;;</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if(line.charAt(i) == '\uFEFF'){</span>
+<span class="fc" id="L110">            i++;</span>
+        }
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if(line.charAt(0) == combiner) {</span>
+            do{
+<span class="fc" id="L114">                word += line.charAt(i);</span>
+<span class="fc" id="L115">                i++;</span>
+<span class="fc bfc" id="L116" title="All 6 branches covered.">            }while (i != line.length() &amp;&amp; line.charAt(i) != delimiter || line.charAt(i - 1) != combiner);</span>
+<span class="fc" id="L117">            word = deleteQuotesOfLine(word);</span>
+<span class="fc" id="L118">            word = deleteQuotesOfLine(word);</span>
+<span class="fc" id="L119">            word = deleteDoubleQuotesInWord(word);</span>
+<span class="fc" id="L120">            wordsOfLine.add(word);</span>
+<span class="fc bfc" id="L121" title="All 4 branches covered.">            while (i &lt; line.length() - 1 &amp;&amp; line.charAt(i) == delimiter) {</span>
+<span class="fc" id="L122">                i++;</span>
+            }
+<span class="fc bfc" id="L124" title="All 2 branches covered.">            if (i &lt; line.length()) {</span>
+<span class="fc" id="L125">                line = line.substring(i);</span>
+            } else {
+<span class="fc" id="L127">                line = &quot;&quot;;</span>
+            }
+        } else {
+            do {
+<span class="fc" id="L131">                word += line.charAt(i);</span>
+<span class="fc" id="L132">                i++;</span>
+<span class="fc bfc" id="L133" title="All 4 branches covered.">            } while (i != line.length() &amp;&amp; line.charAt(i) != delimiter);</span>
+<span class="fc" id="L134">            word = deleteDoubleQuotesInWord(word);</span>
+<span class="fc" id="L135">            wordsOfLine.add(word);</span>
+<span class="fc bfc" id="L136" title="All 4 branches covered.">            while (i &lt; line.length() - 1 &amp;&amp; line.charAt(i) == delimiter) {</span>
+<span class="fc" id="L137">                i++;</span>
+            }
+<span class="fc bfc" id="L139" title="All 2 branches covered.">            if (i &lt; line.length()) {</span>
+<span class="fc" id="L140">                line = line.substring(i);</span>
+            } else {
+<span class="fc" id="L142">                line = &quot;&quot;;</span>
+            }
+        }
+<span class="fc" id="L145">        return line;</span>
+    }
+
+
+    public String deleteQuotesOfLine(String str) {
+<span class="pc bpc" id="L150" title="2 of 6 branches missed.">        if (str.length() &gt; 1 &amp;&amp; str.charAt(0) == combiner &amp;&amp; str.charAt(str.length() - 1) == combiner) {</span>
+<span class="fc" id="L151">            str = str.substring(1, str.length() - 1);</span>
+        }
+<span class="fc" id="L153">        return str;</span>
+    }
+
+    public String deleteDoubleQuotesInWord(String str) {
+<span class="fc" id="L157">        String result = &quot;&quot;;</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        for (int i = 0; i &lt; str.length(); i++){</span>
+<span class="pc bpc" id="L159" title="1 of 6 branches missed.">            if (i != str.length() - 1 &amp;&amp; str.charAt(i) == combiner &amp;&amp; str.charAt(i + 1) == combiner) {</span>
+<span class="fc" id="L160">                result += combiner;</span>
+<span class="fc" id="L161">                i++;</span>
+            } else {
+<span class="fc" id="L163">                result += str.charAt(i);</span>
+            }
+        }
+<span class="fc" id="L166">        return result;</span>
+    }
+
+    public class OpenFile implements Runnable {
+        private FileChannel channel;
+        private int startLocation;
+        private int distance;
+        private ArrayList&lt;String&gt; temp;
+
+<span class="fc" id="L175">        public OpenFile(int startLocation, int distance, FileChannel chnl) {</span>
+<span class="fc" id="L176">            this.startLocation = startLocation;</span>
+<span class="fc" id="L177">            this.distance = distance;</span>
+<span class="fc" id="L178">            this.channel = chnl;</span>
+<span class="fc" id="L179">        }</span>
+
+
+        public void run() {
+<span class="fc" id="L183">            temp = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L184">            try (Stream&lt;String&gt; lines = Files.lines(Paths.get(inputFile))) {</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">                for(int i = startLocation; i &lt; startLocation + distance; i++){</span>
+<span class="fc" id="L186">                    String line = Files.readAllLines(Paths.get(inputFile)).get(i);</span>
+<span class="fc" id="L187">                    temp.add(line);</span>
+                }
+<span class="nc" id="L189">            } catch (Exception e) {</span>
+<span class="nc" id="L190">                e.printStackTrace();</span>
+<span class="fc" id="L191">            }</span>
+<span class="fc" id="L192">            lines.addAll(temp);</span>
+<span class="fc" id="L193">        }</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

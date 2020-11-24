@@ -33,6 +33,11 @@ public class CSVParser{
         this.numb = numb;
     }
 
+    public CSVParser(char delimiter, char combiner){
+        this.delimiter = delimiter;
+        this.combiner = combiner;
+    }
+
     public CSVParser() {
 
     }
@@ -151,7 +156,7 @@ public class CSVParser{
     public String deleteDoubleQuotesInWord(String str) {
         String result = "";
         for (int i = 0; i < str.length(); i++){
-            if (str.charAt(i) == combiner && str.charAt(i + 1) == combiner) {
+            if (i != str.length() - 1 && str.charAt(i) == combiner && str.charAt(i + 1) == combiner) {
                 result += combiner;
                 i++;
             } else {

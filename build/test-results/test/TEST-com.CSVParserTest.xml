@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.CSVParserTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2020-11-24T16:29:21" hostname="WIN-G1S3CJS4IR3" time="0.157">
+  <properties/>
+  <testcase name="testWriteToFile1" classname="com.CSVParserTest" time="0.023"/>
+  <testcase name="testWriteToFile2" classname="com.CSVParserTest" time="0.04"/>
+  <testcase name="testWriteToFile3" classname="com.CSVParserTest" time="0.044"/>
+  <testcase name="testExtractWordFromLineNoQuotes" classname="com.CSVParserTest" time="0.0"/>
+  <testcase name="testExtractWordFromLineNull" classname="com.CSVParserTest" time="0.001"/>
+  <testcase name="testReadCSVFile1" classname="com.CSVParserTest" time="0.046"/>
+  <testcase name="testReadCSVFile2" classname="com.CSVParserTest" time="0.001"/>
+  <testcase name="testExtractWordFromLine" classname="com.CSVParserTest" time="0.0"/>
+  <testcase name="testCSVParserConstruct1" classname="com.CSVParserTest" time="0.0"/>
+  <testcase name="testCSVParserConstruct2" classname="com.CSVParserTest" time="0.0"/>
+  <testcase name="testDeleteQuotesOfLine" classname="com.CSVParserTest" time="0.0"/>
+  <testcase name="testDeleteDoubleQuotesInWordNull" classname="com.CSVParserTest" time="0.0"/>
+  <testcase name="testDeleteQuotesOfLineNull" classname="com.CSVParserTest" time="0.001"/>
+  <testcase name="testDeleteDoubleQuotesInWord" classname="com.CSVParserTest" time="0.0"/>
+  <testcase name="testParseCSV" classname="com.CSVParserTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

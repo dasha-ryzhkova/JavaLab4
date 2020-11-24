@@ -37,7 +37,7 @@ public class Main {
 
         for (File file : listOfFiles) {
             if (file.isFile()) {
-                CSVParser parser = new CSVParser(folderPath + file, del, '"', newdel, numb);
+                CSVParser parser = new CSVParser(file.getPath(), del, '"', newdel, numb);
                 filesLinesArray.addAll(parser.readCSVFile());
             }
         }

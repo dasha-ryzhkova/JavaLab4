@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JavaLab4</a> &gt; <a href="index.source.html" class="el_package">com</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">package com;
+
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+<span class="nc" id="L9">public class Main {</span>
+    public static void main(String[] args)throws IOException
+    {
+<span class="nc" id="L12">        ArrayList&lt;ArrayList&lt;String&gt;&gt; filesLinesArray = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L13">        Scanner scanner = new Scanner(System.in);</span>
+
+<span class="nc" id="L15">        System.out.println(&quot;Enter catalog path:&quot;);</span>
+
+<span class="nc" id="L17">        String folderPath = &quot;C:\\Users\\VivoBook\\Desktop\\4&quot;;</span>
+<span class="nc" id="L18">        File folder = new File(folderPath);</span>
+<span class="nc" id="L19">        File[] listOfFiles = folder.listFiles();</span>
+<span class="nc" id="L20">        System.out.println(&quot;Enter delimiter:&quot;);</span>
+        //String del1 = scanner.next();
+<span class="nc" id="L22">        String del1 = &quot;,&quot;;</span>
+
+<span class="nc" id="L24">        System.out.println(&quot;Enter new delimiter:&quot;);</span>
+        //String newdel1 = scanner.next();
+<span class="nc" id="L26">        String newdel1 = &quot;+&quot;;</span>
+
+<span class="nc" id="L28">        System.out.println(&quot;Enter path for new file:&quot;);</span>
+        //String newpath = scanner.next();
+<span class="nc" id="L30">        String newpath = &quot;C:\\Users\\VivoBook\\Desktop\\result.txt&quot;;</span>
+<span class="nc" id="L31">        char del = del1.charAt(0);</span>
+<span class="nc" id="L32">        char newdel = newdel1.charAt(0);</span>
+
+<span class="nc" id="L34">        System.out.println(&quot;Enter count of thread:&quot;);</span>
+        //Integer numb = scanner.nextInt();;
+<span class="nc" id="L36">        Integer numb = 7;</span>
+
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        for (File file : listOfFiles) {</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (file.isFile()) {</span>
+<span class="nc" id="L40">                CSVParser parser = new CSVParser(file.getPath(), del, '&quot;', newdel, numb);</span>
+<span class="nc" id="L41">                filesLinesArray.addAll(parser.readCSVFile());</span>
+            }
+        }
+<span class="nc" id="L44">        CSVParser parser = new CSVParser();</span>
+<span class="nc" id="L45">        parser.writeToFile(newpath, filesLinesArray, newdel);</span>
+
+<span class="nc" id="L47">        scanner.close();</span>
+<span class="nc" id="L48">    }</span>
+}
+
+// C:\Users\VivoBook\Desktop\lab1.csv
+// C:\Users\VivoBook\Desktop\result.txt
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
