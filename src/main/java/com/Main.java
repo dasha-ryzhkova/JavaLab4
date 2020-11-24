@@ -11,29 +11,30 @@ public class Main {
     {
         ArrayList<ArrayList<String>> filesLinesArray = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
+        //long start  = System.nanoTime();
 
         System.out.println("Enter catalog path:");
 
-        String folderPath = "C:\\Users\\VivoBook\\Desktop\\4";
+        String folderPath = scanner.next();
         File folder = new File(folderPath);
         File[] listOfFiles = folder.listFiles();
         System.out.println("Enter delimiter:");
-        //String del1 = scanner.next();
-        String del1 = ",";
+        String del1 = scanner.next();
+
 
         System.out.println("Enter new delimiter:");
-        //String newdel1 = scanner.next();
-        String newdel1 = "+";
+        String newdel1 = scanner.next();
+
 
         System.out.println("Enter path for new file:");
-        //String newpath = scanner.next();
-        String newpath = "C:\\Users\\VivoBook\\Desktop\\result.txt";
+        String newpath = scanner.next();
+
         char del = del1.charAt(0);
         char newdel = newdel1.charAt(0);
 
         System.out.println("Enter count of thread:");
-        //Integer numb = scanner.nextInt();;
-        Integer numb = 7;
+        Integer numb = scanner.nextInt();;
+
 
         for (File file : listOfFiles) {
             if (file.isFile()) {
@@ -45,6 +46,8 @@ public class Main {
         parser.writeToFile(newpath, filesLinesArray, newdel);
 
         scanner.close();
+//        long finish = System.nanoTime();
+//        System.out.println("Time = " + (finish-start)/1000000);
     }
 }
 
